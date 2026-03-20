@@ -1,7 +1,10 @@
+import {readlink, writeFileSync} from "node:fs"
 import { ChatGroq } from "@langchain/groq";
 import { createAgent, tool } from "langchain";
 import { TavilySearch } from "@langchain/tavily";
 import z from "zod";
+import { Readline } from "node:readline/promises";
+import { stdout } from "node:process";
 
 // https://github.com/langchain-ai/langgraphjs (refer this)
 // https://docs.langchain.com/oss/javascript/langchain/agents
@@ -17,6 +20,7 @@ async function main(params) {
  //*custom tool
   const CalenderEvents = tool(
   async ({ query }) => {
+    // hardcoded for learning
     return JSON.stringify([{
       Title:"Meeting",
       Time:"1pm",
@@ -53,10 +57,21 @@ async function main(params) {
       },
       {
         role: "user",
-        content: "what is current mumbai weather",
+        content: "Do i have any meeting scheduled",
       },
     ],
   });
+
+  const rl = Readline.createInterface({input:process.stdin, output:stdout})
+
+  //To visualize by graph, how agent is working  
+ const drawGraph =  await agent.getGraphAsync()
+ const graphStateImage = await drawGraph.drawMermaidPng()
+ const graphStateArrayBuffer = await graphStateImage.arrayBuffer()
+
+ const filePath = './graphState.png'
+ writeFileSync(filePath, new Uint8Array(graphStateArrayBuffer))
+
   console.log("AI: ", result.messages[result.messages.length - 1].content);
 }
 
