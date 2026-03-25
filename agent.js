@@ -1,4 +1,4 @@
-import { readlink, writeFileSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { ChatGroq } from "@langchain/groq";
 import { createAgent, tool } from "langchain";
 import { TavilySearch } from "@langchain/tavily";
