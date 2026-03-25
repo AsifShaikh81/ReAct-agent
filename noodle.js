@@ -56,14 +56,14 @@ function tastenoodle(state) {
 // this function is for making decision
 function wheretogo() {
   if (true) {
-    return "__end__"
+    return "__end__";
   } else {
-    return "addsalt"
+    return "addsalt";
   }
 }
 
 const graph = new StateGraph(MessagesAnnotation)
- // MessagesAnnotation is nothing but messages
+  // MessagesAnnotation is nothing but messages
   /* adding nodes */
   // --------naming--------function
   .addNode("boilwater", boilwater)
@@ -74,31 +74,31 @@ const graph = new StateGraph(MessagesAnnotation)
   //   --------------adding edges
   //--------from/start---to/end
   .addEdge("__start__", "boilwater")
-  .addEdge('boilwater', 'addnoodles')
-  .addEdge('addnoodles', 'addmasala')
-  .addEdge('addmasala','addsalt')
-  .addEdge('addsalt','tastenoodle')
-  .addConditionalEdges('tastenoodle',wheretogo, {
-    "__end__":END,
-    "addsalt": "addsalt"
-  })
- 
- // compiling
-  const app = graph.compile()
+  .addEdge("boilwater", "addnoodles")
+  .addEdge("addnoodles", "addmasala")
+  .addEdge("addmasala", "addsalt")
+  .addEdge("addsalt", "tastenoodle")
+  .addConditionalEdges("tastenoodle", wheretogo, {
+    __end__: END,
+    addsalt: "addsalt",
+  });
+
+// compiling
+const app = graph.compile();
 // invoking
-  async function main() {
-    const finalstate = await app.invoke({
-        messages:[]
-    })
-    console.log('final',finalstate)
-  }
+async function main() {
+  const finalstate = await app.invoke({
+    messages: [],
+  });
+  console.log("final", finalstate);
+}
 
-  main()
+main();
 // ----------------below code is not part of custom graph-----------
- //To visualize by graph, how agent is working
-  const drawGraph = await app.getGraphAsync();
-  const graphStateImage = await drawGraph.drawMermaidPng();
-  const graphStateArrayBuffer = await graphStateImage.arrayBuffer();
+//To visualize by graph, how agent is working
+const drawGraph = await app.getGraphAsync();
+const graphStateImage = await drawGraph.drawMermaidPng();
+const graphStateArrayBuffer = await graphStateImage.arrayBuffer();
 
-  const filePath = "./noodleState.png";
-  writeFileSync(filePath, new Uint8Array(graphStateArrayBuffer));
+const filePath = "./noodleState.png";
+writeFileSync(filePath, new Uint8Array(graphStateArrayBuffer));
