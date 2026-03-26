@@ -1,6 +1,7 @@
 import { END, MessagesAnnotation, StateGraph } from "@langchain/langgraph";
 import { writeFileSync } from "node:fs";
 
+//* in this i learned to creat custom grap(part of langGraph) and converted it into code 
 // check notion for better understanfing of graph
 /*  
  start

@@ -1,3 +1,5 @@
+//*used langGraph framework to build this ReAct agent 
+
 import { writeFileSync } from "node:fs";
 import { ChatGroq } from "@langchain/groq";
 import { createAgent, tool } from "langchain";
@@ -6,18 +8,19 @@ import z from "zod";
 import readline from "node:readline/promises";
 import { MemorySaver } from "@langchain/langgraph";
 
+
 // https://github.com/langchain-ai/langgraphjs (refer this)
 // https://docs.langchain.com/oss/javascript/langchain/agents
 async function main(params) {
   //https://docs.langchain.com/oss/javascript/integrations/chat/groq
 
-  //*define tool
+  //*1. define tool
   //https://docs.langchain.com/oss/javascript/integrations/tools/tavily_search
   const Searchtool = new TavilySearch({
     maxResults: 3,
     topic: "general",
   });
-  //*custom tool
+  //*1.1 custom tool
   const CalenderEvents = tool(
     async ({ query }) => {
       // hardcoded for learning
@@ -40,13 +43,13 @@ async function main(params) {
     },
   );
 
-  //*model created
+  //*2. model created
   const model = new ChatGroq({
     model: "openai/gpt-oss-120b",
     temperature: 0,
   });
 
-  //*agent created and memory added
+  //*3. agent created and memory added
   const checkpointer = new MemorySaver();
   const agent = createAgent({
     model: model,
@@ -54,7 +57,7 @@ async function main(params) {
     checkpointer: checkpointer, // memory
   });
 
-  //*invoke agent
+  //*4. invoke agent
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -82,6 +85,7 @@ async function main(params) {
   }
   rl.close();
 
+//* ---------------------------------------------------------------------------------------------------------------
   //To visualize by graph, how agent is working
   const drawGraph = await agent.getGraphAsync();
   const graphStateImage = await drawGraph.drawMermaidPng();
