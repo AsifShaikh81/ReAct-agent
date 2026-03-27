@@ -8,7 +8,7 @@
 */
 
 import { ChatGroq } from "@langchain/groq";
-import { MessagesAnnotation, StateGraph } from "@langchain/langgraph";
+import { END, MessagesAnnotation, StateGraph } from "@langchain/langgraph";
 import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { TavilySearch } from "@langchain/tavily";
 import { tool, createAgent } from "langchain";
@@ -57,6 +57,7 @@ const llm = new ChatGroq({
   temperature: 0,
 }).bindTools(tools);
 
+//* 3 Build the graph
 //note : state is aglobal storage all function(node) can access it, it contain messages history( ai message , human message )
 async function callModel(state) {
   // call the llm
@@ -65,7 +66,6 @@ async function callModel(state) {
   return { messages: [response] };
 }
 
-//* 3 Build the graph
 function wheretogo(state) {
   const lastMessage = state.messages[state.messages.length - 1];
 
@@ -82,7 +82,10 @@ const graph = new StateGraph(MessagesAnnotation)
   .addNode("tools", toolNode)
   //-------edges added---------
   .addEdge("__start__", "llm")
-  .addConditionalEdges("llm", wheretogo)
+  .addConditionalEdges("llm", wheretogo , {
+    __end__ : END,
+    tools: "tools"
+  })
   .addEdge("tools", "llm");
 
 
